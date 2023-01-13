@@ -1,0 +1,47 @@
+---
+title: "Book Reviews 3"
+author: "Amelia Rudberg"
+date: "2023-01-13"
+output: html_document
+---
+
+### Prepping the data  
+**Start by loading the tidyverse library**
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+**Then read the csv**
+```{r}
+book_reviews<-read_csv("book_reviews.csv")
+```
+
+### Summarizing the data 
+
+```{r}
+dim(book_reviews)
+```
+
+There are 2000 rows and 4 columns in this data table. 
+```{r}
+col_names<-colnames(book_reviews)
+```
+The columns represent the book name, the review it received, the state it was sold in, and the price of the book.   
+  
+Next look at the type of each column 
+```{r}
+for (c in col_names){
+  print(typeof(book_reviews[[c]]))
+}
+```
+```{r}
+for (c in col_names){
+  print("Unique Values in Column:")
+  print(c)
+  print(unique(book_reviews[[c]]))
+  print("")
+}
+```
+
+### Cleaning the data   
+Next we will check for 
