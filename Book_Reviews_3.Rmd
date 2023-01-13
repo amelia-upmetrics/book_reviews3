@@ -44,4 +44,51 @@ for (c in col_names){
 ```
 
 ### Cleaning the data   
-Next we will check for 
+***Remove missing data***
+As we can see in the unique values output, review is the only column with missing data. 
+
+```{r}
+complete_book_reviews<-book_reviews %>% filter(!is.na(review))
+dim(complete_book_reviews)
+```
+Slightly more than 200 rows were removed due to a missing review. 
+
+***Standardize Names***
+```{r}
+complete_book_reviews <- complete_book_reviews %>% mutate(
+  state= case_when(
+  state == "California" ~ "CA", 
+  state ==  "New York" ~ "NY", 
+  state == "Florida" ~ "FL", 
+  state == "Texas" ~ "TX",
+  TRUE ~ state
+)
+)
+```
+
+***Convert Ratings to Numbers***  
+```{r}
+complete_book_reviews<-complete_book_reviews %>% mutate(
+  review_num = case_when(
+    review == "Poor" ~ 1, 
+    review == "Fair" ~ 2, 
+    review == "Good" ~ 3, 
+    review == "Great" ~ 4, 
+    review == "Excellent" ~ 5
+  ),
+  is_high_review = if_else(review_num >= 4, TRUE, FALSE)
+  )
+```
+
+*** Calculate the Most Profitable Book***
+Next we will create a summary table with the number of books sold, the purchase price, and the total revenue for each book. When we sort this in descending order of 
+```{r}
+books_total<- complete_book_reviews %>% group_by(book) %>% summarize(
+  purchased = n(),
+  price = mean(price)
+) %>% mutate(
+  revenue = purchased*price
+) %>% arrange(-revenue)
+```
+
+***Based on these calculations, we can see "Secrets Of R For Advanced Students" is the most profitable book***

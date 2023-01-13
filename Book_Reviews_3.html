@@ -416,7 +416,45 @@ state it was sold in, and the price of the book.</p>
 </div>
 <div id="cleaning-the-data" class="section level3">
 <h3>Cleaning the data</h3>
-<p>Next we will check for</p>
+<p><strong><em>Remove missing data</em></strong> As we can see in the
+unique values output, review is the only column with missing data.</p>
+<pre class="r"><code>complete_book_reviews&lt;-book_reviews %&gt;% filter(!is.na(review))
+dim(complete_book_reviews)</code></pre>
+<pre><code>## [1] 1794    4</code></pre>
+<p>Slightly more than 200 rows were removed due to a missing review.</p>
+<p><strong><em>Standardize Names</em></strong></p>
+<pre class="r"><code>complete_book_reviews &lt;- complete_book_reviews %&gt;% mutate(
+  state= case_when(
+  state == &quot;California&quot; ~ &quot;CA&quot;, 
+  state ==  &quot;New York&quot; ~ &quot;NY&quot;, 
+  state == &quot;Florida&quot; ~ &quot;FL&quot;, 
+  state == &quot;Texas&quot; ~ &quot;TX&quot;,
+  TRUE ~ state
+)
+)</code></pre>
+<p><strong><em>Convert Ratings to Numbers</em></strong></p>
+<pre class="r"><code>complete_book_reviews&lt;-complete_book_reviews %&gt;% mutate(
+  review_num = case_when(
+    review == &quot;Poor&quot; ~ 1, 
+    review == &quot;Fair&quot; ~ 2, 
+    review == &quot;Good&quot; ~ 3, 
+    review == &quot;Great&quot; ~ 4, 
+    review == &quot;Excellent&quot; ~ 5
+  ),
+  is_high_review = if_else(review_num &gt;= 4, TRUE, FALSE)
+  )</code></pre>
+<p>*** Calculate the Most Profitable Book*** Next we will create a
+summary table with the number of books sold, the purchase price, and the
+total revenue for each book. When we sort this in descending order
+of</p>
+<pre class="r"><code>books_total&lt;- complete_book_reviews %&gt;% group_by(book) %&gt;% summarize(
+  purchased = n(),
+  price = mean(price)
+) %&gt;% mutate(
+  revenue = purchased*price
+) %&gt;% arrange(-revenue)</code></pre>
+<p><strong><em>Based on these calculations, we can see “Secrets Of R For
+Advanced Students” is the most profitable book</em></strong></p>
 </div>
 
 
